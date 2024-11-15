@@ -6,10 +6,17 @@ from aiogram.dispatcher.filters import Command
 from aiogram import types
 import librosa
 import os
-from dotenv import load_dotenv
+from azure.identity import DefaultAzureCredential
+from azure.keyvault.secrets import SecretClient
 
-load_dotenv()
-TOKEN = os.getenv('TOKEN')
+# Налаштування Key Vault
+VAULT_URL = "https://telegramtokentas.vault.azure.net/    "
+SECRET_NAME = "TelegramBotToken"
+
+# Отримання токена з Key Vault
+credential = DefaultAzureCredential()
+client = SecretClient(vault_url=VAULT_URL, credential=credential)
+TOKEN = client.get_secret(SECRET_NAME).value
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot=bot)
@@ -32,7 +39,6 @@ async def command_start_handler(message: types.Message) -> None:
                            f"""Hello, {message.from_user.full_name}! I am ready!
         Choose language: 'Eng' - for English, 'Ru' - for Russian, 'Ua' - for Ukrainian""",
                            reply_markup=markup)
-
 
 
 @dp.message_handler(commands=['Ua'])
@@ -123,7 +129,6 @@ async def voice_message_handler(message: types.Message) -> None:
                 if item.endswith('wav'):
                     os.remove(item)
         cleaner()
-
 
 
 if __name__ == '__main__':
