@@ -3,6 +3,5 @@ python-dotenv==1.0.0
 librosa==0.10.0
 SpeechRecognition==3.10.0
 soundfile==0.12.1
-pyenv install 3.11
-pyenv global 3.11
-python -m pip install aiohttp
+aiohttp==3.8.5
+requests==2.31.0
